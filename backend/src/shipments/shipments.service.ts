@@ -1,11 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException, } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Shipment } from './entities/shipment.entity/shipment.entity';
 import { ShipmentEvent } from './entities/shipment-event.entity/shipment-event.entity';
 import { CreateShipmentDto } from './../auth/dto/create-shipment.dto';
 import { ShipmentQueryDto } from './../auth/dto/shipment-query.dto';
 import { UpdateShipmentStatusDto } from './../auth/dto/update-shipment-status.dto';
+import { AssignVehiclesDto } from './../auth/dto/assign-vehicles.dto';
+import { assignShipmentsFirstFitDecreasing } from './utils/assign-vehicles.util';
 import { ShipmentStatus } from '../common/enums/shipment-status.enum';
 
 
@@ -110,6 +112,54 @@ export class ShipmentsService {
         const sequence = String(countToday + 1).padStart(4, '0');
 
         return `${prefix}${sequence}`;
+    }
+
+    async assignVehicles(assignVehiclesDto: AssignVehiclesDto) {
+        const { shipmentIds, vehicleCapacity } = assignVehiclesDto;
+
+        const shipments = await this.shipmentsRepository.find({
+            where: {
+                id: In(shipmentIds),
+            },
+        });
+
+        if (shipments.length !== shipmentIds.length) {
+            const foundIds = new Set(shipments.map((shipment) => shipment.id));
+            const missingIds = shipmentIds.filter((id) => !foundIds.has(id));
+
+            throw new NotFoundException(
+                `Shipments not found: ${missingIds.join(', ')}`,
+            );
+        }
+
+        const invalidStatusShipments = shipments.filter(
+            (shipment) => shipment.status !== ShipmentStatus.IN_WAREHOUSE,
+        );
+
+        if (invalidStatusShipments.length > 0) {
+            throw new BadRequestException(
+                `All shipments must be in IN_WAREHOUSE status. Invalid shipment IDs: ${invalidStatusShipments
+                    .map((shipment) => shipment.id)
+                    .join(', ')}`,
+            );
+        }
+
+        const normalizedShipments = shipments.map((shipment) => ({
+            id: shipment.id,
+            trackingCode: shipment.trackingCode,
+            weight: Number(shipment.weight),
+        }));
+
+        try {
+            return assignShipmentsFirstFitDecreasing(
+                normalizedShipments,
+                vehicleCapacity,
+            );
+        } catch (error) {
+            throw new BadRequestException(
+                error instanceof Error ? error.message : 'Vehicle assignment failed',
+            );
+        }
     }
 
     async create(createShipmentDto: CreateShipmentDto, userId: string) {

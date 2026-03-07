@@ -4,6 +4,7 @@ import { ShipmentsService } from './shipments.service';
 import { CreateShipmentDto } from './../auth/dto/create-shipment.dto';
 import { ShipmentQueryDto } from './../auth/dto/shipment-query.dto';
 import { UpdateShipmentStatusDto } from './../auth/dto/update-shipment-status.dto';
+import { AssignVehiclesDto } from './../auth/dto/assign-vehicles.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('Shipments')
@@ -16,6 +17,11 @@ export class ShipmentsController {
     @Post()
     create(@Body() createShipmentDto: CreateShipmentDto, @Req() req: any) {
         return this.shipmentsService.create(createShipmentDto, req.user.id);
+    }
+
+    @Post('assign-vehicles')
+    assignVehicles(@Body() assignVehiclesDto: AssignVehiclesDto) {
+        return this.shipmentsService.assignVehicles(assignVehiclesDto);
     }
 
     @Get()
