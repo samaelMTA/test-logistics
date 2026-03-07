@@ -6,14 +6,27 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
-  const options = new DocumentBuilder()
-    .setTitle('Translog API')
-    .setDescription('The Translog API description')
+
+  app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  const config = new DocumentBuilder()
+    .setTitle('TransLog API')
+    .setDescription('Technical test API')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
-  await app.listen(process.env.PORT ?? 3000);
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
+
+  await app.listen(3000);
 }
 bootstrap();
