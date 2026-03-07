@@ -29,7 +29,7 @@ export class Shipment {
     phone?: string;
 
     @Column('decimal', { precision: 10, scale: 2 })
-    weight: number;
+    weight: string;
 
     @Column({
         type: 'enum',
