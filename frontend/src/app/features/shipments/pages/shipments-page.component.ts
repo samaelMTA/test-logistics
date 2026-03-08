@@ -9,7 +9,9 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
+import { CreateShipmentDialogComponent } from '../components/create-shipment-dialog.component';
 import { NavbarComponent } from '../../../layout/components/navbar.component';
 import { ShipmentsService } from '../../../core/services/shipments.service';
 import { Shipment, ShipmentStatus } from '../../../core/models/shipment.model';
@@ -41,8 +43,8 @@ import { Shipment, ShipmentStatus } from '../../../core/models/shipment.model';
             <p>Gestión interna de paquetes y seguimiento</p>
             </div>
 
-            <button mat-raised-button color="primary">
-            Nuevo envío
+            <button mat-raised-button color="primary" (click)="openCreateDialog()">
+                Nuevo envío
             </button>
         </div>
 
@@ -166,6 +168,7 @@ import { Shipment, ShipmentStatus } from '../../../core/models/shipment.model';
     `],
 })
 export class ShipmentsPageComponent implements OnInit {
+    private readonly dialog = inject(MatDialog);
     private readonly shipmentsService = inject(ShipmentsService);
     private readonly snackBar = inject(MatSnackBar);
 
@@ -226,6 +229,23 @@ export class ShipmentsPageComponent implements OnInit {
         });
     }
 
+    openCreateDialog(): void {
+        const dialogRef = this.dialog.open(CreateShipmentDialogComponent, {
+            width: '520px',
+            disableClose: true,
+        });
+
+        dialogRef.afterClosed().subscribe((created) => {
+            if (created) {
+            this.snackBar.open('Envío creado correctamente', 'Cerrar', {
+                duration: 3000,
+            });
+            this.page = 1;
+            this.loadShipments();
+            }
+        });
+    }
+    
     onStatusChange(): void {
         this.page = 1;
         this.loadShipments();

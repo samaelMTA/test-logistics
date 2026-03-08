@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ShipmentListResponse, ShipmentStatus } from '../models/shipment.model';
+import { Shipment, ShipmentListResponse, ShipmentStatus } from '../models/shipment.model';
 
+export interface CreateShipmentRequest {
+    originAddress: string;
+    destinationAddress: string;
+    recipientName: string;
+    phone?: string;
+    weight: number;
+}
 @Injectable({
     providedIn: 'root',
 })
@@ -24,4 +31,8 @@ export class ShipmentsService {
             params,
         });
     }
+
+    createShipment(payload: CreateShipmentRequest): Observable<Shipment> {
+    return this.http.post<Shipment>(`${this.apiUrl}/shipments`, payload);
+  }
 }
