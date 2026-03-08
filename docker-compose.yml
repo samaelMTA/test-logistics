@@ -37,5 +37,20 @@ services:
       - /app/node_modules
     command: npm run start:dev
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: translog_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '4200:4200'
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run start -- --host 0.0.0.0
+
 volumes:
   postgres_data:
