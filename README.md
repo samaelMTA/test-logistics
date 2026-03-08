@@ -58,7 +58,7 @@ Los clientes pueden rastrear sus envíos mediante un código de seguimiento sin 
 
 ## Operador
 
-- Autenticar
+- Autenticarse
 - Crear envíos
 - Actualizar el estado de los envíos
 - Gestionar el ciclo de eventos de los envíos
@@ -96,7 +96,7 @@ Los clientes pueden realizar un seguimiento de un envio sin autenticacion usando
 ## Informacion obtenida:
 
 - Estado actual del envio
-- Historia completa de eventos del envio
+- Historial completo de eventos del envio
 - Detalles del envio
 
 ---
@@ -121,7 +121,7 @@ Se utiliza para el modelado de entidades y la interacción con la base de datos 
 
 ### Docker
 
-Docker Compose garantiza la ejecución consistente de la aplicación en diferentes entornos y simplifica la configuración del proyecto para su evaluación, agilizando el desspligue.
+Docker Compose garantiza la ejecución consistente de la aplicación en diferentes entornos y simplifica la configuración del proyecto para su evaluación, agilizando el despligue.
 
 ---
 
@@ -164,7 +164,17 @@ Desde la raiz del proyecto:
 Esto iniciará:
 - La base de datos PostgreSQL
 - La API de backend NestJS
-- La visualización frontend Angular
+- La aplicación frontend Angular
+
+---
+
+# Variables de entorno
+
+Se incluye un archivo `.env.example` con las variables de entorno necesarias para el backend.
+
+Al ejecutar el proyecto con Docker Compose, estas variables ya se proporcionan en la configuración del contenedor, por lo que no se requiere configuración manual.
+
+Pero se incluye el archivo `.env.example` como referencia y para ejecutar el backend fuera de Docker si se desea.
 
 ---
 
@@ -196,6 +206,20 @@ Para comenzar el sistema crea automáticamente un usuario supervisor predetermin
 
 Este usuario puede iniciar sesión y registrar cuentas de operador.
 
+### Flujo recomendado
+
+1. Levantar con Docker
+
+2. Login con supervisor
+
+3. Crear operador
+
+4. Crear envío
+
+5. Cambiar estados
+
+6. Probar tracking público
+
 ---
 
 # Ejecución de pruebas
@@ -208,6 +232,8 @@ Las pruebas incluyen:
 
 - Algoritmo de asignación de vehículos
 - Lógica de negocio de envíos
+
+En donde, se validan transiciones válidas e inválidas del ciclo de eventos de un envio y el comportamiento del algoritmo First Fit Decreasing
 
 ---
 
