@@ -31,12 +31,19 @@ export const routes: Routes = [
         ),
     },
     {
+    path: 'tracking',
+    loadComponent: () =>
+        import('./features/tracking/pages/public-tracking-page.component').then(
+        (m) => m.PublicTrackingPageComponent,
+        ),
+    },
+    {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'login',
+        redirectTo: 'tracking',
     },
     {
         path: '**',
-        redirectTo: 'login',
+        redirectTo: 'tracking',
     },
 ];

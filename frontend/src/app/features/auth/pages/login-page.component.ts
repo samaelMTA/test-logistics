@@ -29,26 +29,31 @@ import { AuthService } from '../../../core/services/auth.service';
             <p>Inicia sesión para gestionar envíos</p>
 
             <form [formGroup]="form" (ngSubmit)="submit()">
-            <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Email</mat-label>
-                <input matInput type="email" formControlName="email" />
-            </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" formControlName="email" />
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Contraseña</mat-label>
-                <input matInput type="password" formControlName="password" />
-            </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput type="password" formControlName="password" />
+                </mat-form-field>
 
-            <button mat-raised-button color="primary" class="full-width" [disabled]="form.invalid || loading">
-                {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
-            </button>
+                <button mat-raised-button color="primary" class="full-width" [disabled]="form.invalid || loading">
+                    {{ loading ? 'Ingresando...' : 'Iniciar sesión' }}
+                </button>
             </form>
 
             <div class="hint">
             <p>Solo los supervisores pueden registrar nuevos usuarios.</p>
             </div>
+            <div class="actions">
+                <a routerLink="/tracking">
+                    <button mat-button type="button" class="full-width">Consultar tracking público</button>
+                </a>
+            </div>
         </mat-card>
-        </div>
+    </div>
     `,
         styles: [`
         .auth-container {
@@ -79,6 +84,9 @@ import { AuthService } from '../../../core/services/auth.service';
             margin-top: 16px;
             color: #666;
             font-size: 14px;
+        }
+        .actions {
+            margin-top: 8px;
         }
     `],
 })

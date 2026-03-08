@@ -47,6 +47,10 @@ export class ShipmentsService {
         return this.http.get<Shipment>(`${this.apiUrl}/shipments/${id}`);
     }
 
+    getTrackingByCode(trackingCode: string): Observable<Shipment> {
+        return this.http.get<Shipment>(`${this.apiUrl}/tracking/${trackingCode}`);
+    }
+
     createShipment(payload: CreateShipmentRequest): Observable<Shipment> {
         return this.http.post<Shipment>(`${this.apiUrl}/shipments`, payload);
     }
