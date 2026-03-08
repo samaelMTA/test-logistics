@@ -23,6 +23,14 @@ export const routes: Routes = [
         ),
     },
     {
+    path: 'shipments/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+        import('./features/shipments/pages/shipment-detail-page.component').then(
+        (m) => m.ShipmentDetailPageComponent,
+        ),
+    },
+    {
         path: '',
         pathMatch: 'full',
         redirectTo: 'login',

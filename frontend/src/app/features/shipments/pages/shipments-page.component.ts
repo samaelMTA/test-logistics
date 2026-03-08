@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 import { CreateShipmentDialogComponent } from '../components/create-shipment-dialog.component';
 import { NavbarComponent } from '../../../layout/components/navbar.component';
@@ -97,7 +98,8 @@ import { Shipment, ShipmentStatus } from '../../../core/models/shipment.model';
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="clickable-row" (click)="goToDetail(row.id)">
+                </tr>
             </table>
 
             <div *ngIf="shipments.length === 0" class="empty-state">
@@ -165,12 +167,21 @@ import { Shipment, ShipmentStatus } from '../../../core/models/shipment.model';
             padding: 24px;
             color: #666;
         }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+
+        .clickable-row:hover {
+            background: #f3f6fb;
+        }
     `],
 })
 export class ShipmentsPageComponent implements OnInit {
     private readonly dialog = inject(MatDialog);
     private readonly shipmentsService = inject(ShipmentsService);
     private readonly snackBar = inject(MatSnackBar);
+    private readonly router = inject(Router);
 
     displayedColumns: string[] = [
         'trackingCode',
@@ -244,6 +255,10 @@ export class ShipmentsPageComponent implements OnInit {
             this.loadShipments();
             }
         });
+    }
+
+    goToDetail(shipmentId: string): void {
+        this.router.navigate(['/shipments', shipmentId]);
     }
     
     onStatusChange(): void {

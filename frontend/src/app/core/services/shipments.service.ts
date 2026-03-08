@@ -10,6 +10,13 @@ export interface CreateShipmentRequest {
     phone?: string;
     weight: number;
 }
+
+export interface UpdateShipmentStatusRequest {
+    status: ShipmentStatus;
+    location: string;
+    notes?: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -18,21 +25,39 @@ export class ShipmentsService {
 
     constructor(private readonly http: HttpClient) { }
 
-    getShipments(page = 1, limit = 10, status?: ShipmentStatus): Observable<ShipmentListResponse> {
+    getShipments(
+        page = 1,
+        limit = 10,
+        status?: ShipmentStatus,
+    ): Observable<ShipmentListResponse> {
         let params = new HttpParams()
-            .set('page', page)
-            .set('limit', limit);
+        .set('page', page)
+        .set('limit', limit);
 
         if (status) {
-            params = params.set('status', status);
+        params = params.set('status', status);
         }
 
         return this.http.get<ShipmentListResponse>(`${this.apiUrl}/shipments`, {
-            params,
+        params,
         });
     }
 
+    getShipmentById(id: string): Observable<Shipment> {
+        return this.http.get<Shipment>(`${this.apiUrl}/shipments/${id}`);
+    }
+
     createShipment(payload: CreateShipmentRequest): Observable<Shipment> {
-    return this.http.post<Shipment>(`${this.apiUrl}/shipments`, payload);
-  }
+        return this.http.post<Shipment>(`${this.apiUrl}/shipments`, payload);
+    }
+
+    updateShipmentStatus(
+        id: string,
+        payload: UpdateShipmentStatusRequest,
+    ): Observable<Shipment> {
+        return this.http.patch<Shipment>(
+        `${this.apiUrl}/shipments/${id}/status`,
+        payload,
+        );
+    }
 }
