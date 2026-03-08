@@ -14,44 +14,60 @@ En la prueba tecnica realizada se implementa un sistema logistico que permite a 
 - PostgreSQL
 - TypeORM
 - JWT Authentication
-- Swagger API Documentation
+- Swagger (API Documentation)
 - Jest (unit testing)
 
 ## Frontend
 - Angular 
+- Angular Material
+- Reactive Forms
+- Angular Router
+- Signals for state handling
+
+## Infraestructura
+- Docker
+- Docker Compose
 
 ---
 
-# Funciones principales
+# Sistema TransLog
 
-## Autenticacion y Roles
-- JWT authentication
-- Role-based authorization
+La aplicación consta de dos módulos principales:
 
-### Roles:
-- **SUPERVISOR**
-  - Registra nuevos usuarios
-- **OPERATOR**
-  - Maneja los envios
+## Sistema de Logística Interna
 
-### Endpoints:
-- POST /auth/register
-- POST /auth/login
+Utilizado por el personal de la empresa para gestionar los envíos.
+
+Las funciones incluyen:
+- Crear envíos
+- Actualizar el estado de los envíos
+- Seguir el ciclo de eventos de los envíos
+- Gestionar usuarios con permisos basados ​​en roles
+
+## Portal de seguimiento público
+
+Los clientes pueden rastrear sus envíos mediante un código de seguimiento sin necesidad de autenticación.
+
+---
+# Roles de usuario:
+
+## Supervisor
+
+- Registrar nuevos usuarios
+- Acceder al sistema interno
+
+## Operador
+
+- Autenticar
+- Crear envíos
+- Actualizar el estado de los envíos
+- Gestionar el ciclo de eventos de los envíos
 
 ---
 
 # Gestión de los envios
 
-## Funciones de los Operadores:
-
-- Crear envios
-- Ver lista de envios con paginación
-- Filtrar la lista de envios por estado
-- Ver los detalles de cada envio con su historial de eventos
-- Actualizar el estado del envio
-- Cancelar el envio, solo si no fue entregado
-
-## Ciclo de los estados de un envio:
+## Ciclo de estados de un envio:
 
   CREATED -> IN_WAREHOUSE -> IN_TRANSIT -> OUT_FOR_DELIVERY -> DELIVERED
 
@@ -60,6 +76,7 @@ En la prueba tecnica realizada se implementa un sistema logistico que permite a 
   RETURNED & CANCELLED
 
 ## Endpoints
+
 - POST /shipments
 - GET /shipments
 - GET /shipments/:id
@@ -70,17 +87,41 @@ En la prueba tecnica realizada se implementa un sistema logistico que permite a 
 
 # Seguimiento publico del envio
 
-Los clientes pueden realizar un seguimiento de un envio sin autenticacion usando un codigo unico de seguimiento
+Los clientes pueden realizar un seguimiento de un envio sin autenticacion usando un codigo unico de seguimiento (Ejemplo: ENV-20260308-0001)
 
 ## Endpoint:
 
 - GET /tracking/:trackingCode
 
-## Datos obtenidos:
+## Informacion obtenida:
 
 - Estado actual del envio
 - Historia completa de eventos del envio
 - Detalles del envio
+
+---
+
+# Decisiones técnicas
+
+### NestJS
+
+Seleccionado por su arquitectura modular y su uso intensivo de TypeScript, caracteristicas utiles para construir aplicaciones backend escalables y mantenibles.
+
+### Angular
+
+Seleccionado para crear una aplicación frontend estructurada basada en componentes y el uso de TypeScript.
+
+### PostgreSQL
+
+Proporciona almacenamiento de datos relacionales confiable y avanzada, destacando su alto rendimiento y escalabilidad.
+
+### TypeORM
+
+Se utiliza para el modelado de entidades y la interacción con la base de datos PostgreSQL.
+
+### Docker
+
+Docker Compose garantiza la ejecución consistente de la aplicación en diferentes entornos y simplifica la configuración del proyecto para su evaluación, agilizando el desspligue.
 
 ---
 
@@ -111,20 +152,65 @@ El sistema logistico utiliza el algoritmo FFD para minimizar el numero de vehicu
 
 ---
 
-# Estrutura del proyecto
+# Instrucciones para levantar el entorno
 
-backend/
-  src/
-  auth/
-  users/
-  shipments/
-  tracking/
-  common/
+Se necesita:
+- Docker
+- Docker Compose
+
+Desde la raiz del proyecto:
+  docker compose up --build
+
+Esto iniciará:
+- La base de datos PostgreSQL
+- La API de backend NestJS
+- La visualización frontend Angular
+
+---
+
+# Acceder a la aplicación
+
+- Frontend:
+  http://localhost:4200
+
+- Seguimiento público:
+  http://localhost:4200/tracking
+
+- API de backend:
+  http://localhost:3000
+
+- Documentación de la API de Swagger:
+  http://localhost:3000/docs
 
 ---
 
-# Documentación de la API
+# Primer inicio
 
-Al utilizar Swagger, la documentacion esta disponible en http://localhost:3000/docs
+Para comenzar el sistema crea automáticamente un usuario supervisor predeterminado, puesto que es el único que puede crear usuarios con rol de operador.
+
+### Credenciales predeterminadas:
+
+- Correo electrónico: supervisor@translog.com
+
+- Contraseña: 123456*
+
+Este usuario puede iniciar sesión y registrar cuentas de operador.
 
 ---
+
+# Ejecución de pruebas
+
+Las pruebas unitarias de backend se pueden ejecutar con (estando dentro de la carpeta backend):
+
+      npm run test
+
+Las pruebas incluyen:
+
+- Algoritmo de asignación de vehículos
+- Lógica de negocio de envíos
+
+---
+
+# Autor
+
+Miguel Colunche
