@@ -1,1 +1,37 @@
-<p>public-tracking works!</p>
+<div class="page">
+    <mat-card>
+        <h1>Public Tracking</h1>
+
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Tracking code</mat-label>
+                <input matInput formControlName="trackingCode" placeholder="ENV-20260307-0001" />
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
+                {{ loading() ? 'Searching...' : 'Track shipment' }}
+            </button>
+        </form>
+
+        @if (error()) {
+        <p class="error">{{ error() }}</p>
+        }
+
+        @if (result(); as shipment) {
+        <div class="result">
+            <h2>{{ shipment.trackingCode }}</h2>
+            <p><strong>Status:</strong> {{ shipment.status }}</p>
+            <p><strong>Recipient:</strong> {{ shipment.recipientName }}</p>
+
+            <h3>History</h3>
+            @for (event of shipment.events || []; track event.id) {
+            <div class="event">
+                <p><strong>{{ event.status }}</strong> - {{ event.location }}</p>
+                <p>{{ event.notes }}</p>
+                <small>{{ event.createdAt | date:'medium' }}</small>
+            </div>
+            }
+        </div>
+        }
+    </mat-card>
+</div>
